@@ -181,72 +181,62 @@ async function downloadFilteredPDF(range) {
 
 // 6. PRATINJAU (PREVIEW) & CRUD
 function openPreview(index) {
-    // 1. Urutkan data (pastikan 'reports' tersedia di scope global)
     const sortedData = [...reports].sort((a, b) => new Date(`${a.tgl}T${a.waktu}`) - new Date(`${b.tgl}T${b.waktu}`));
     const d = sortedData[index];
-    
-    // 2. Logika pengecekan insiden
     const isIncident = d.insidenWhat && d.insidenWhat.trim() !== "";
     const previewBody = document.getElementById('preview-body');
 
-    // 3. Render Template
     previewBody.innerHTML = `
-        <div class="preview-container" style="font-family: 'Arial', 'Times New Roman', serif; padding: 20px; color: #333; line-height: 1.6;">
-            
-            <!-- HEADER -->
-            <div style="background: #2c3e50; color: #fff; padding: 15px; text-align: center; font-size: 1.2rem; font-weight: bold; border-radius: 4px 4px 0 0; margin-bottom: 20px;">
-                PRATINJAU LAPORAN K3 (HSE REPORT)
+        <div class="preview-main-container">
+            <div style="padding: 15px; text-align: center; border-bottom: 1.5px solid #000;">
+                <h3 style="margin: 0; letter-spacing: 1px;">DAILY HSE REPORT</h3>
+            </div>
+
+            <div style="background: #e0e0e0; padding: 8px; font-weight: bold; border-bottom: 1px solid #000; font-size: 0.9rem;">
+                I. INFORMASI PROYEK & STATUS
             </div>
             
-            <!-- SECTION I: INFO PROYEK -->
-            <h4 style="border-left: 4px solid #2c3e50; padding-left: 10px; margin-bottom: 10px; color: #2c3e50;">I. INFORMASI PROYEK</h4>
-            <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px; table-layout: fixed;">
+            <table class="table-responsive">
                 <tr>
-                    <td style="border: 1px solid #bdc3c7; padding: 10px; background: #f8f9fa; width: 30%; font-weight: bold;">Tanggal / Waktu</td>
-                    <td style="border: 1px solid #bdc3c7; padding: 10px;">${formatDateIndo(d.tgl)} / ${d.waktu} WIB</td>
+                    <td class="label-cell" style="width: 35%;">Tanggal / Waktu</td>
+                    <td>${formatDateIndo(d.tgl)} / ${d.waktu} WIB</td>
                 </tr>
                 <tr>
-                    <td style="border: 1px solid #bdc3c7; padding: 10px; background: #f8f9fa; font-weight: bold;">Proyek / Area</td>
-                    <td style="border: 1px solid #bdc3c7; padding: 10px;">${d.proyek} / ${d.area}</td>
+                    <td class="label-cell">Proyek / Area</td>
+                    <td>${d.proyek} / ${d.area}</td>
                 </tr>
                 <tr>
-                    <td style="border: 1px solid #bdc3c7; padding: 10px; background: #f8f9fa; font-weight: bold;">Manpower / PTW</td>
-                    <td style="border: 1px solid #bdc3c7; padding: 10px;">${d.manpower} Personel / <span style="color: #2980b9;">${d.ptw || '-'}</span></td>
+                    <td class="label-cell">Izin Kerja (PTW)</td>
+                    <td>${d.ptw || '-'}</td>
                 </tr>
                 <tr>
-                    <td style="border: 1px solid #bdc3c7; padding: 10px; background: #f8f9fa; font-weight: bold;">Status Keamanan</td>
-                    <td style="border: 1px solid #bdc3c7; padding: 10px;">
-                        <span style="display: inline-block; padding: 2px 8px; border-radius: 3px; background: ${isIncident ? '#e74c3c' : '#27ae60'}; color: white; font-weight: bold; font-size: 0.85rem;">
-                            ${isIncident ? '🚨 INCIDENT' : '✅ SAFE'}
-                        </span>
+                    <td class="label-cell">Tenaga Kerja</td>
+                    <td>${d.manpower} Orang</td>
+                </tr>
+                <tr>
+                    <td class="label-cell">Status Area</td>
+                    <td style="font-weight: bold; color: ${isIncident ? 'red' : 'green'};">
+                        ${isIncident ? '❌ TERJADI INSIDEN' : '✅ AMAN / SAFE'}
                     </td>
                 </tr>
             </table>
 
-            <!-- SECTION II: DESKRIPSI -->
-            <h4 style="border-left: 4px solid #2c3e50; padding-left: 10px; margin-bottom: 10px; color: #2c3e50;">II. AKTIVITAS & RENCANA KERJA</h4>
-            <div style="border: 1px solid #bdc3c7; padding: 15px; background: #fff; margin-bottom: 25px; white-space: pre-wrap; border-radius: 4px; min-height: 60px;">${d.keterangan}</div>
+            <div style="background: #e0e0e0; padding: 8px; font-weight: bold; border-top: 1px solid #000; border-bottom: 1px solid #000; font-size: 0.9rem;">
+                II. DETAIL AKTIVITAS
+            </div>
+            <div style="padding: 15px; min-height: 100px; line-height: 1.4;">
+                ${d.keterangan}
+            </div>
 
-            <!-- SECTION III: DOKUMENTASI -->
-            <h4 style="border-left: 4px solid #2c3e50; padding-left: 10px; margin-bottom: 15px; color: #2c3e50;">III. DOKUMENTASI LAPANGAN</h4>
-            <div style="display: flex; flex-direction: column; gap: 20px;">
-                
-                <div style="width: 100%;">
-                    <p style="font-weight: bold; margin-bottom: 8px; font-size: 0.9rem; color: #555;">📸 Foto Aktivitas Utama:</p>
-                    <img src="${d.fotoAdmin}" style="width: 100%; max-height: 400px; object-fit: contain; border: 1px solid #ddd; border-radius: 8px; background: #eee;">
-                </div>
-                
-                ${d.fotoInsiden ? `
-                <div style="width: 100%; border-top: 1px dashed #e74c3c; pt: 15px;">
-                    <p style="font-weight: bold; color: #e74c3c; margin-bottom: 8px; font-size: 0.9rem;">⚠️ Foto Temuan Insiden/Bahaya:</p>
-                    <img src="${d.fotoInsiden}" style="width: 100%; max-height: 400px; object-fit: contain; border: 2px solid #e74c3c; border-radius: 8px; background: #fdf2f2;">
-                </div>
-                ` : ''}
-                
+            <div style="background: #e0e0e0; padding: 8px; font-weight: bold; border-top: 1px solid #000; border-bottom: 1px solid #000; font-size: 0.9rem;">
+                III. DOKUMENTASI
+            </div>
+            <div style="padding: 10px; text-align: center;">
+                <img src="${d.fotoAdmin}" style="width: 100%; border: 1px solid #000; margin-bottom: 10px;">
+                ${d.fotoInsiden ? `<img src="${d.fotoInsiden}" style="width: 100%; border: 2px solid red;">` : ''}
             </div>
         </div>
     `;
-
     // 4. Tampilkan Modal
     document.getElementById('modal-preview').classList.remove('hidden');
 }
