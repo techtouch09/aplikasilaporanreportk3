@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSE Digital Report - AK3U</title>
+    <!-- Google Fonts & Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- PDF Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- SECTION: LOGIN -->
+    <div id="login-section" class="auth-container">
+        <div class="login-card">
+            <div class="login-header">
+                <i class="fas fa-shield-alt logo-icon"></i>
+                <h2>HSE Portal</h2>
+                <p>Silahkan masuk untuk memulai laporan</p>
+            </div>
+            <form id="login-form">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="username" placeholder="Username" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="btn-login">LOGIN</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- SECTION: MAIN DASHBOARD -->
+    <div id="main-section" class="hidden">
+        <nav class="navbar">
+            <span class="nav-brand"><i class="fas fa-hard-hat"></i> AK3U Digital</span>
+            <button onclick="logout()" class="btn-logout"><i class="fas fa-sign-out-alt"></i> Keluar</button>
+        </nav>
+
+        <div class="container">
+            <header class="dashboard-header">
+                <h1>Daily HSE Report</h1>
+                <p>Sistem Pelaporan Keselamatan & Kesehatan Kerja</p>
+            </header>
+
+            <div class="action-bar">
+                <div class="search-wrapper">
+                    <!-- Placeholder diperbarui untuk instruksi pencarian tanggal -->
+                    <input type="text" id="searchInput" onkeyup="searchReport()" placeholder="Cari Tanggal (Contoh: 01/01/2026)...">
+                    <i class="fas fa-search"></i> 
+                </div>
+                <button class="btn-primary" onclick="showForm()">
+                    <i class="fas fa-plus"></i> BUAT LAPORAN BARU
+                </button>
+            </div>
+
+            <div class="filter-pdf-group">
+                <small>Cetak Rekap:</small>
+                <button onclick="downloadFilteredPDF('harian')" class="btn-filter">Harian</button>
+                <button onclick="downloadFilteredPDF('mingguan')" class="btn-filter">Mingguan</button>
+                <button onclick="downloadFilteredPDF('bulanan')" class="btn-filter">Bulanan</button>
+            </div>
+
+            <div class="table-container">
+                <div class="table-header">
+                    <h3><i class="fas fa-history"></i> Riwayat Laporan</h3>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table id="reportTable">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">No.</th> <!-- Penambahan Kolom Nomor -->
+                                <th>Tanggal</th>
+                                <th>Nama Proyek</th>
+                                <th>Area</th>
+                                <th>Manpower</th>
+                                <th>Foto & Keterangan</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportList">
+                            <!-- Data akan diisi oleh script.js secara berurutan waktu -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: FORM INPUT/EDIT -->
+    <div id="modal-form" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Buat Laporan Baru</h2>
+                <span class="close" onclick="hideForm()">&times;</span>
+            </div>
+    
+            <form id="hse-form">
+                <input type="hidden" id="editIndex" value="-1">
+                
+                <fieldset class="section-white">
+                    <legend>Informasi Umum</legend>
+                    <div class="grid-form">
+                        <div class="input-field">
+                            <label class="required">Tanggal <span class="text-red">*</span></label>
+                            <input type="date" id="tgl" required>
+                        </div>
+                        <div class="input-field">
+                            <label class="required">Waktu/Jam Kerja <span class="text-red">*</span></label>
+                            <!-- Input jam untuk mendukung pengurutan waktu -->
+                            <input type="time" id="waktu" required>
+                        </div>
+                        <div class="input-field">
+                            <label class="required">Nama Proyek <span class="text-red">*</span></label>
+                            <input type="text" id="proyek" required placeholder="Nama Proyek">
+                        </div>
+                        <div class="input-field">
+                            <label class="required">Area Kerja <span class="text-red">*</span></label>
+                            <input type="text" id="area" required placeholder="Lokasi Spesifik">
+                        </div>
+                        <div class="input-field">
+                            <label class="required">Izin Kerja (PTW) <span class="text-red">*</span></label>
+                            <select id="ptw" required>
+                                <option value="" disabled selected>-- Pilih Izin --</option>
+                                <option value="Hot Work">Hot Work</option>
+                                <option value="Cold Work">Cold Work</option>
+                                <option value="Confined Space">Confined Space</option>
+                                <option value="Lifting">Lifting</option>
+                            </select>
+                        </div>
+                        <div class="input-field">
+                            <label class="required">Manpower <span class="text-red">*</span></label>
+                            <input type="number" id="manpower" required placeholder="Jumlah Personil">
+                        </div>
+                    </div>
+                    <div class="input-field full-width">
+                        <label class="required">Keterangan Aktivitas Kerja <span class="text-red">*</span></label>
+                        <input type="text" id="keterangan" required placeholder="Detail aktivitas hari ini">
+                    </div>
+                    <div class="input-field full-width">
+                        <label class="required">Foto Dokumentasi Kerja Utama <span class="text-red">*</span></label>
+                        <input type="file" id="fotoAdmin" accept="image/*">
+                    </div>
+                </fieldset>
+    
+                <fieldset class="section-white highlight-incident">
+                    <legend>Laporan & Investigasi Insiden (5W + 1H)</legend>
+                    <p class="hint-text">Isi jika terjadi kecelakaan atau Unsafe Action/Condition.</p>
+                    <div class="grid-form">
+                        <div class="input-field">
+                            <label>What (Apa Kejadiannya?)</label>
+                            <input type="text" id="insidenWhat" placeholder="Contoh: Terpeleset">
+                        </div>
+                        <div class="input-field">
+                            <label>Who (Siapa Terlibat?)</label>
+                            <input type="text" id="insidenWho" placeholder="Nama personil">
+                        </div>
+                        <div class="input-field">
+                            <label>Where (Lokasi?)</label>
+                            <input type="text" id="insidenWhere">
+                        </div>
+                        <div class="input-field">
+                            <label>When (Jam?)</label>
+                            <input type="time" id="insidenWhen">
+                        </div>
+                    </div>
+                    <div class="input-field full-width">
+                        <label>Why (Mengapa Terjadi?)</label>
+                        <textarea id="insidenWhy" rows="2"></textarea>
+                    </div>
+                    <div class="input-field full-width">
+                        <label>How (Kronologi & Penanganan?)</label>
+                        <textarea id="insidenHow" rows="2"></textarea>
+                    </div>
+                    <div class="input-field full-width">
+                        <label id="labelFotoInsiden">Foto Bukti Insiden</label>
+                        <input type="file" id="fotoInsiden" accept="image/*">
+                    </div>
+                </fieldset>
+    
+                <fieldset class="section-white">
+                    <legend>Rencana & Perbaikan</legend>
+                    <div class="input-field full-width">
+                        <label>Corrective Action</label>
+                        <textarea id="corrective" rows="2"></textarea>
+                    </div>
+                    <div class="input-field full-width">
+                        <label>Rencana Kerja Besok</label>
+                        <input type="text" id="rencana">
+                    </div>
+                </fieldset>
+    
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" onclick="hideForm()">Batal</button>
+                    <button type="submit" class="btn-submit">Simpan Laporan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: PREVIEW -->
+    <div id="modal-preview" class="modal hidden">
+        <div class="modal-content preview-content">
+            <div class="modal-header">
+                <h2>Pratinjau Laporan</h2>
+            </div>
+            <div id="preview-body" class="preview-body">
+                <!-- Konten pratinjau diisi via JS -->
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn-cancel" onclick="closePreview()">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="main-footer">
+        <div class="footer-content">
+            <p>Aplikasi Laporan K3 Digital v1.0</p>
+            <p>Dikembangkan oleh : <strong>OLAN MAULANA, S.Kom</strong></p>
+        </div>
+    </footer>
+</div>
+</div>
+
+    <script src="script.js"></script>
+</body>
+</html>
