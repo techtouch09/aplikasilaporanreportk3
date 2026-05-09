@@ -1,0 +1,480 @@
+/* --- Google Fonts & Variables --- */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+
+:root {
+    --primary: #0061ff;
+    --primary-dark: #0046b8;
+    --success: #00c853;
+    --danger: #ff1744;
+    --warn: #ff9100;
+    --dark: #0f172a;
+    --slate: #64748b;
+    --bg-light: #f8fafc;
+    --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- Global Reset --- */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--bg-light);
+    color: var(--dark);
+    line-height: 1.6;
+}
+
+.hidden { 
+    display: none !important; 
+}
+
+/* --- Auth / Login Section --- */
+.auth-wrapper {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
+
+.login-card {
+    background: white;
+    padding: 3rem;
+    border-radius: 24px;
+    width: 380px;
+    text-align: center;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.safety-logo {
+    background: var(--warn);
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 1.5rem;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.8rem;
+    color: white;
+    transform: rotate(-10deg);
+    box-shadow: 0 10px 15px -3px rgba(255, 145, 0, 0.4);
+}
+
+/* --- Navigation --- */
+/* Pastikan pembungkus paling luar seperti ini */
+.navbar * {
+    text-align: left; /* Mengembalikan teks ke kiri kecuali menu container */
+}
+.navbar {
+    display: flex !important;
+    flex-direction: row !important; /* Paksa horizontal */
+    justify-content: space-between; /* Brand kiri, Menu kanan */
+    align-items: center;
+    padding: 10px 20px;
+    width: 100%;
+    box-sizing: border-box;
+    background: white; /* Sesuaikan warna */
+}
+
+/* Supaya brand tidak terpengaruh centering dari luar */
+.nav-brand {
+    text-align: left;
+    margin: 0;
+}
+
+/* Wadah menu di pojok kanan */
+.nav-menu-container {
+    position: relative;
+    margin-left: auto; /* Memastikan terdorong ke kanan */
+}
+
+/* Tombol titik tiga */
+.menu-toggle {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.nav-btn {
+    background: transparent;
+    border: none;
+    font-weight: 600;
+    padding: 0.6rem 1rem;
+    border-radius: 12px;
+    cursor: pointer;
+    color: var(--slate);
+    transition: var(--transition);
+}
+
+.nav-btn:hover {
+    background: rgba(0, 97, 255, 0.1);
+    color: var(--primary);
+}
+
+/* --- Universal Buttons --- */
+.btn {
+    padding: 0.8rem 1.5rem;
+    border-radius: 14px;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 0.95rem;
+    text-decoration: none;
+}
+
+.btn-primary { 
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+    box-shadow: 0 4px 14px 0 rgba(0, 97, 255, 0.39);
+}
+
+.btn-success { 
+    background: linear-gradient(135deg, #00c853 0%, #00a444 100%);
+    color: white;
+    box-shadow: 0 4px 14px 0 rgba(0, 200, 83, 0.39);
+}
+
+.btn-danger { 
+    background: #fff1f2;
+    color: var(--danger);
+}
+
+.btn-danger:hover { 
+    background: var(--danger); 
+    color: white; 
+}
+
+.btn-secondary { 
+    background: #f1f5f9; 
+    color: var(--slate); 
+}
+
+.btn:active { 
+    transform: scale(0.96); 
+}
+
+/* --- Forms & Inputs --- */
+.form-container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    background: white;
+    padding: 2.5rem;
+    border-radius: 24px;
+    box-shadow: var(--card-shadow);
+}
+
+.form-section {
+    margin-bottom: 2.5rem;
+    padding: 2rem;
+    background: #fafafa;
+    border-radius: 20px;
+    border: 1px solid #f1f5f9;
+}
+
+.incident-alert {
+    background: #fff8f8;
+    border: 1px solid #fee2e2;
+}
+
+h4 { 
+    margin-top: 0; 
+    color: var(--primary); 
+    display: flex; 
+    align-items: center; 
+    gap: 10px;
+    font-size: 1.1rem;
+}
+
+input, select, textarea {
+    width: 100%;
+    background: white;
+    border: 1.5px solid #e2e8f0;
+    padding: 0.9rem;
+    border-radius: 12px;
+    font-family: inherit;
+    transition: var(--transition);
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(0, 97, 255, 0.1);
+}
+
+/* --- Tables & Data --- */
+.table-card {
+    background: white;
+    border-radius: 24px;
+    overflow-x: auto;
+    margin-top: 2rem;
+    box-shadow: var(--card-shadow);
+}
+
+table { 
+    width: 100%; 
+    border-collapse: collapse; 
+}
+
+th {
+    background: #f8fafc;
+    padding: 1.2rem 1rem;
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--slate);
+    border-bottom: 2px solid #f1f5f9;
+    text-align: left;
+}
+
+td { 
+    padding: 1.2rem 1rem; 
+    border-bottom: 1px solid #f1f5f9; 
+    vertical-align: middle; 
+}
+
+tr:hover { 
+    background-color: #fcfdfe; 
+}
+
+.status-pill {
+    padding: 0.4rem 1rem;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    display: inline-block;
+}
+
+.safe { 
+    background: #e8fcf0; 
+    color: #008a3a; 
+}
+
+.unsafe { 
+    background: #fff1f2; 
+    color: #e11d48; 
+}
+
+/* --- Summary / Filters --- */
+.summary-header {
+    display: flex;
+    flex-direction: column; /* Default untuk HP: susun ke bawah */
+    gap: 10px;
+    padding: 15px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+}
+
+.filter-group { 
+    display: flex; 
+    gap: 10px; 
+    align-items: center; 
+}
+
+/* Kontainer utama menu */
+.nav-menu-container {
+    position: relative;
+    display: inline-block;
+}
+
+/* Gaya tombol titik tiga */
+.menu-toggle {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 10px;
+    color: #333;
+}
+
+/* Gaya daftar link (Dropdown) */
+/* Container Dropdown Utama */
+.nav-links {
+    display: none; /* Sembunyi secara default */
+    position: absolute;
+    right: 15px;
+    top: 55px;
+    background-color: #ffffff;
+    min-width: 200px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1); /* Shadow lembut */
+    border-radius: 16px; /* Sudut sangat membulat sesuai gambar */
+    z-index: 1000;
+    flex-direction: column;
+    padding: 12px 0; /* Ruang di atas dan bawah menu */
+    border: none; /* Hilangkan garis tepi container */
+}
+
+/* Menampilkan menu */
+.nav-links.show {
+    display: flex;
+}
+
+/* Styling Tombol Menu (Kunci Utama) */
+.nav-links .nav-btn, 
+.nav-links .btn {
+    width: 100%;
+    text-align: left;
+    padding: 14px 24px; /* Padding luas agar nyaman di-klik */
+    border: none !important; /* WAJIB: Menghilangkan garis kotak */
+    background: transparent !important; /* Hilangkan warna background default */
+    font-size: 16px;
+    color: #4a5568; /* Warna teks abu-abu gelap profesional */
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: sans-serif;
+    margin: 0;
+}
+
+/* Efek Hover (Saat disentuh/kursor di atasnya) */
+.nav-links .nav-btn:hover, 
+.nav-links .btn:hover {
+    background-color: #f7fafc !important; /* Warna hover sangat halus */
+    color: #2d3748;
+}
+
+/* Styling Khusus Tombol Keluar */
+.nav-links .btn-danger {
+    color: #e53e3e !important; /* Warna merah lembut */
+    font-weight: 500;
+    margin-top: 4px;
+}
+
+.nav-links .btn-danger:hover {
+    background-color: #fff5f5 !important;
+}
+
+/* --- Home / Hero Section --- */
+.hero-section {
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&q=80&w=1000');
+    background-size: cover;
+    background-position: center;
+    padding: 5rem 2rem;
+    border-radius: 30px;
+    color: white;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.stat-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 24px;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+}
+
+.stat-card:hover { 
+    transform: translateY(-10px); 
+}
+
+/* --- Modal --- */
+.modal-content {
+    border-radius: 28px;
+    padding: 3rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Container Utama */
+.summary-header {
+    display: flex;
+    flex-direction: column; /* Default untuk HP: susun ke bawah */
+    gap: 10px;
+    padding: 15px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+}
+
+/* Grup Pencarian (Tanggal, Select, Cari) */
+.search-container {
+    display: flex;
+    flex-wrap: nowrap; /* Biar tetap satu baris di HP jika muat */
+    gap: 8px;
+    width: 100%;
+}
+
+/* Mengatur ukuran elemen input agar proporsional */
+.search-container input[type="date"],
+.search-container select {
+    flex: 2; /* Lebih lebar */
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.search-container .btn-primary {
+    flex: 1; /* Tombol cari lebih kecil */
+    white-space: nowrap;
+}
+
+/* Tombol Cetak */
+.btn-success {
+    width: 100%;
+    padding: 10px;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+/* Pengaturan untuk layar Tablet/PC */
+@media (min-width: 768px) {
+    .summary-header {
+        flex-direction: row; /* Berjejer ke samping di layar lebar */
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .search-container {
+        width: auto;
+        flex: 3;
+    }
+    
+    .btn-success {
+        width: auto;
+        flex: 1;
+        margin-left: 20px;
+    }
+}
+/* Responsive */
+@media (max-width: 768px) {
+    .navbar { 
+        flex-direction: column; 
+        gap: 15px; 
+        padding: 1.5rem; 
+    }
+    .nav-links { 
+        flex-wrap: wrap; 
+        justify-content: center; 
+    }
+    .form-container { 
+        margin: 1rem; 
+        padding: 1.5rem; 
+    }
+    .summary-header { 
+        flex-direction: column; 
+        gap: 15px; 
+        text-align: center;
+    }
+}

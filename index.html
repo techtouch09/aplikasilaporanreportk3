@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSE Digital Reporting System</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- CDN Library untuk PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+
+    <!-- SECTION: LOGIN -->
+    <section id="login-section" class="auth-wrapper">
+        <div class="login-card">
+            <div class="safety-logo">K3</div>
+            <h1>HSE PORTAL</h1>
+            <p>Safety starts with you</p>
+            <div class="login-inputs">
+                <input type="text" id="username" placeholder="Username">
+                <input type="password" id="password" placeholder="Password">
+            </div>
+            <button onclick="handleLogin()" class="btn btn-primary btn-full">MASUK</button>
+        </div>
+    </section>
+
+    <!-- MAIN APP -->
+    <main id="main-app" class="hidden">
+        <nav class="navbar">
+            <div class="nav-brand">HSE<span>DIGITAL</span></div>
+            <div class="nav-menu-container">
+                <button class="menu-toggle" onclick="toggleMenu()">&#8942;</button>
+                <div class="nav-links" id="navLinks">
+                    <button onclick="showPage('home')">Beranda</button>
+                    <button onclick="showPage('create')">Buat Laporan</button>
+                    <button onclick="showPage('summary')">Rekap Laporan</button>
+                    <button onclick="handleLogout()" class="btn-danger">Keluar</button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- PAGE: HOME -->
+        <section id="page-home" class="page">
+            <div class="hero-section">
+                <h1>Utamakan Keselamatan & Kesehatan Kerja</h1>
+                <p>Digitalisasi pelaporan K3 untuk area kerja yang lebih aman dan terukur.</p>
+            </div>
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <h3>Hierarchy of Control</h3>
+                    <ul>
+                        <li>Eliminasi</li>
+                        <li>Substitusi</li>
+                        <li>Engineering Control</li>
+                        <li>Administrasi & APD</li>
+                    </ul>
+                </div>
+                <div class="stat-card">
+                    <h3>Golden Rules</h3>
+                    <p>PTW, LOTO, Working at Height, Confined Space Entry.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE: CREATE/EDIT -->
+        <section id="page-create" class="page hidden">
+            <div class="form-container">
+                <h2 id="form-title">Buat Laporan Baru</h2>
+                <form id="report-form">
+                    <input type="hidden" id="edit-id">
+                    
+                    <div class="form-section">
+                        <h4>I. Informasi Umum</h4>
+                        <div class="input-grid">
+                            <div class="group"><label>Tanggal</label><input type="date" id="tgl" required></div>
+                            <div class="group"><label>Waktu (WIB)</label><input type="time" id="jam" required></div>
+                            <div class="group"><label>Nama Proyek</label><input type="text" id="proyek" required></div>
+                            <div class="group"><label>Area Kerja</label><input type="text" id="area" required></div>
+                            <div class="group">
+                                <label>Permit (Izin Kerja)</label>
+                                <select id="permit" required>
+                                    <option value="" disabled selected>Pilih Jenis Izin Kerja</option>
+                                    <option value="Hot Work">Izin Kerja Panas (Hot Work)</option>
+                                    <option value="Cold Work">Izin Kerja Dingin (Cold Work)</option>
+                                    <option value="Confined Space">Izin Masuk Ruang Terbatas (Confined Space)</option>
+                                    <option value="Lifting">Izin Kerja Pengangkatan (Lifting Operation)</option>
+                                    <option value="Height">Izin Kerja di Ketinggian (Working at Height)</option>
+                                </select>
+                            </div>
+                            <div class="group"><label>Manpower</label><input type="number" id="manpower" required></div>
+                        </div>
+                        <label>Keterangan Kerja</label>
+                        <textarea id="ket_kerja" placeholder="Jelaskan aktivitas kerja..." required></textarea>
+                        <label>Upload Foto Kerja (Max 5)</label>
+                        <input type="file" id="foto_kerja" accept="image/*" multiple onchange="validateFiles(this, 5)">
+                    </div>
+
+                    <div class="form-section incident-alert">
+                        <h4>II. Laporan Insiden (5W + 1H)</h4>
+                        <div class="input-grid">
+                            <input type="text" id="what" placeholder="What (Apa yang terjadi?)">
+                            <input type="text" id="who" placeholder="Who (Siapa yang terlibat?)">
+                            <input type="text" id="where" placeholder="Where (Lokasi kejadian?)">
+                            <input type="text" id="when" placeholder="When (Kapan kejadian?)">
+                            <input type="text" id="why" placeholder="Why (Mengapa terjadi?)">
+                            <input type="text" id="how" placeholder="How (Bagaimana kronologinya?)">
+                        </div>
+                        <label>Foto Insiden (Wajib jika ada temuan)</label>
+                        <input type="file" id="foto_insiden" accept="image/*" multiple>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>III. Tindakan & Rencana</h4>
+                        <textarea id="corrective" placeholder="Corrective Action (Tindakan perbaikan saat ini)"></textarea>
+                        <label>Rencana Kerja Besok</label>
+                        <select id="plan_besok">
+                            <option value="Lanjut Pekerjaan">Lanjut Pekerjaan Rutin</option>
+                            <option value="Housekeeping">Housekeeping Umum</option>
+                            <option value="Safety Induction">Safety Induction</option>
+                            <option value="Toolbox Talk">Toolbox Talk</option>
+                        </select>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-success btn-full">SIMPAN LAPORAN</button>
+                        <button type="button" id="btn-cancel" class="btn btn-secondary btn-full hidden" onclick="cancelEdit()">BATAL EDIT</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- PAGE: SUMMARY (DIREVISI) -->
+        <section id="page-summary" class="page hidden">
+            <div class="summary-header">
+                <div class="search-container">
+                    <input type="date" id="filter-date" class="form-control">
+                    <select id="filter-type" class="form-control">
+                        <option value="daily">Harian</option>
+                        <option value="weekly">Mingguan</option>
+                        <option value="monthly">Bulanan</option>
+                    </select>
+                    <button onclick="renderTable()" class="btn btn-primary">Cari</button>
+                </div>
+                <button class="btn btn-success" onclick="exportFilteredPDF()">
+                    📥 Download Rekap (Sesuai Filter)
+                </button>
+            </div>
+
+            <div class="table-card">
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Tanggal / Jam</th>
+                                <th>Proyek / Area</th>
+                                <th>MP</th>
+                                <th>Foto & Keterangan</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rekap-body">
+                            <!-- Data akan diisi oleh script.js -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- MODAL DETAIL -->
+    <div id="modal-detail" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closePreview()">&times;</span>
+            <div id="modal-data"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
